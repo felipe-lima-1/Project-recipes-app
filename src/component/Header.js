@@ -1,12 +1,19 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import profileImg from '../images/profileIcon.svg';
 import searchImg from '../images/searchIcon.svg';
 
 function Header(props) {
+  const [searchInput, setSearchInput] = useState(false);
+
   const { title } = props;
   const { location: { pathname }, push } = useHistory();
+
+  const handleSearch = () => {
+    setSearchInput(!searchInput);
+    console.log(searchInput);
+  };
 
   const renderIcon = () => {
     if (
@@ -17,11 +24,18 @@ function Header(props) {
       return (
         null
       );
-    } return (<img
-      src={ searchImg }
-      alt="icone de pesquisa"
-      data-testid="search-top-btn"
-    />);
+    } return (
+      <button
+        type="button"
+        onClick={ handleSearch }
+      >
+        <img
+          src={ searchImg }
+          alt="icone de pesquisa"
+          data-testid="search-top-btn"
+        />
+      </button>
+    );
   };
 
   return (
@@ -37,6 +51,8 @@ function Header(props) {
         />
       </button>
       { renderIcon() }
+      {searchInput
+      && <input type="text" data-testid="search-input" placeholder="Buscar" />}
       <h1 data-testid="page-title">{title}</h1>
     </header>
   );
