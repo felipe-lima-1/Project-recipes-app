@@ -7,8 +7,8 @@ import SearchBar from './SearchBar';
 
 function Header(props) {
   const [searchInput, setSearchInput] = useState(false);
-
   const { title } = props;
+
   const { location: { pathname }, push } = useHistory();
 
   const handleSearch = () => {

@@ -1,9 +1,11 @@
-const fetchApiName = async (search) => {
-  const url = 'https://www.themealdb.com/api/json/v1/1/search.php?s=';
-  const endpoint = `${url}${search}`;
+const fetchApiName = async (search, api) => {
+  const endpoint = `https://www.${api}.com/api/json/v1/1/search.php?s=${search}`;
   const response = await fetch(endpoint);
   const data = await response.json();
-  return data.meals;
+  if (api === 'themealdb') {
+    return data.meals;
+  }
+  return data.drinks;
 };
 
 export default fetchApiName;
