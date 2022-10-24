@@ -1,8 +1,10 @@
 import React, { useContext } from 'react';
+import { useHistory } from 'react-router-dom';
 import myContext from '../context/myContext';
 
 function Login() {
   const { email, password, setEmail, setPassword } = useContext(myContext);
+  const history = useHistory();
 
   const handleButton = () => {
     const regexEmail = /\S+[@]\w+[.]\w+/gm;
@@ -16,6 +18,8 @@ function Login() {
     };
 
     localStorage.setItem('user', JSON.stringify(user));
+
+    history.push('/meals');
   };
 
   return (
