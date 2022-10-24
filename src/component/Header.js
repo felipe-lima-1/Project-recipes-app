@@ -6,8 +6,8 @@ import searchImg from '../images/searchIcon.svg';
 
 function Header(props) {
   const { title } = props;
-  const { location: { pathname } } = useHistory();
-  console.log(pathname);
+  const { location: { pathname }, push } = useHistory();
+
   const renderIcon = () => {
     if (
       pathname === '/profile'
@@ -26,11 +26,16 @@ function Header(props) {
 
   return (
     <header>
-      <img
-        src={ profileImg }
-        alt="imagem de perfil"
-        data-testid="profile-top-btn"
-      />
+      <button
+        type="button"
+        onClick={ () => push('/profile') }
+      >
+        <img
+          src={ profileImg }
+          alt="imagem de perfil"
+          data-testid="profile-top-btn"
+        />
+      </button>
       { renderIcon() }
       <h1 data-testid="page-title">{title}</h1>
     </header>
