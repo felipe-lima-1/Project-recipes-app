@@ -1,10 +1,23 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import MyContext from './myContext';
 
-const INITIAL_STATE = {};
-
 function MyProvider({ children }) {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const INITIAL_STATE = useMemo(() => ({
+    email,
+    password,
+    setEmail,
+    setPassword,
+  }), [
+    email,
+    password,
+    setEmail,
+    setPassword,
+  ]);
+
   return (
     <MyContext.Provider value={ INITIAL_STATE }>
       { children }
