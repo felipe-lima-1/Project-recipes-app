@@ -1,4 +1,6 @@
 import React, { useContext } from 'react';
+import React from 'react';
+import Footer from '../component/Footer';
 import Header from '../component/Header';
 import Recipes from '../component/Recipes';
 import myContext from '../context/myContext';
@@ -22,6 +24,8 @@ function Meals() {
             />
           </section>
         ))}
+      Meals
+      <Footer />
     </div>
   );
 }

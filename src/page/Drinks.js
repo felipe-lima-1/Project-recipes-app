@@ -2,6 +2,8 @@ import React, { useContext } from 'react';
 import Header from '../component/Header';
 import Recipes from '../component/Recipes';
 import myContext from '../context/myContext';
+import Footer from '../component/Footer';
+
 
 function Drinks() {
   const { recipes } = useContext(myContext);
@@ -23,6 +25,8 @@ function Drinks() {
             />
           </section>))
       }
+      Drinks
+      <Footer />
     </div>
   );
 }
