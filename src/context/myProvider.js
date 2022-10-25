@@ -5,22 +5,22 @@ import MyContext from './myContext';
 function MyProvider({ children }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [ingredients, setIngredients] = useState([]);
+  const [recipes, setRecipes] = useState([]);
 
   const INITIAL_STATE = useMemo(() => ({
     email,
     password,
     setEmail,
     setPassword,
-    ingredients,
-    setIngredients,
+    recipes,
+    setRecipes,
   }), [
     email,
     password,
     setEmail,
     setPassword,
-    ingredients,
-    setIngredients,
+    recipes,
+    setRecipes,
   ]);
 
   return (

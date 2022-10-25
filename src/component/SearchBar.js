@@ -8,52 +8,47 @@ import fetchApiFirstLetter from '../services/firstLetter';
 function SearchBar() {
   const [radioState, setRadioState] = useState('Ingredient');
   const [searchInput, setSearchInput] = useState('');
-  const { ingredients, setIngredients } = useContext(myContext);
+  const { recipes, setRecipes } = useContext(myContext);
   const { location: { pathname }, push } = useHistory();
 
   useEffect(() => {
-    if (ingredients.length === 1) {
-      if (Object.keys(ingredients[0])[0] === 'idDrink') {
-        push(`/drinks/${ingredients[0].idDrink}`);
-      } else push(`/meals/${ingredients[0].idMeal}`);
+    if (recipes !== null && recipes.length === 1) {
+      if (Object.keys(recipes[0])[0] === 'idDrink') {
+        push(`/drinks/${recipes[0].idDrink}`);
+      } else push(`/meals/${recipes[0].idMeal}`);
     }
-  }, [ingredients, push]);
+  }, [recipes, push]);
 
   const fetchMeal = async () => {
     const api = 'themealdb';
     if (radioState === 'Ingredient') {
-      setIngredients(await fetchApiIngredient(searchInput, api));
+      setRecipes(await fetchApiIngredient(searchInput, api));
     } else if (radioState === 'Name') {
-      setIngredients(await fetchApiName(searchInput, api));
-    } else if (radioState === 'First letter') {
-      if (searchInput.length !== 1) {
-        global.alert('Your search must have only 1 (one) character');
-      } else {
-        setIngredients(await fetchApiFirstLetter(searchInput, api));
-      }
+      setRecipes(await fetchApiName(searchInput, api));
+    } else if (searchInput.length !== 1) {
+      global.alert('Your search must have only 1 (one) character');
+    } else {
+      setRecipes(await fetchApiFirstLetter(searchInput, api));
     }
   };
 
   const fetchCocktail = async () => {
-    console.log('foi');
     const api = 'thecocktaildb';
     if (radioState === 'Ingredient') {
-      setIngredients(await fetchApiIngredient(searchInput, api));
+      setRecipes(await fetchApiIngredient(searchInput, api));
     } else if (radioState === 'Name') {
-      setIngredients(await fetchApiName(searchInput, api));
-    } else if (radioState === 'First letter') {
-      if (searchInput.length !== 1) {
-        global.alert('Your search must have only 1 (one) character');
-      } else {
-        setIngredients(await fetchApiFirstLetter(searchInput, api));
-      }
+      setRecipes(await fetchApiName(searchInput, api));
+    } else if (searchInput.length !== 1) {
+      global.alert('Your search must have only 1 (one) character');
+    } else {
+      setRecipes(await fetchApiFirstLetter(searchInput, api));
     }
   };
 
   const handleClick = async () => {
     if (pathname === '/meals') {
       await fetchMeal();
-    } else if (pathname === '/drinks') {
+    } else {
       await fetchCocktail();
     }
   };
