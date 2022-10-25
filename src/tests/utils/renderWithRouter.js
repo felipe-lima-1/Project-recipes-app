@@ -4,8 +4,8 @@ import { Router } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 import { render } from '@testing-library/react';
 
-function renderWithRouter(componentToRender) {
-  const customHistory = createMemoryHistory();
+function renderWithRouter(componentToRender, initialEntries = ['/']) {
+  const customHistory = createMemoryHistory({ initialEntries });
 
   const objRender = render(
     <Router history={ customHistory }>
