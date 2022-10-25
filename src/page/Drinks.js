@@ -4,7 +4,6 @@ import Recipes from '../component/Recipes';
 import myContext from '../context/myContext';
 import Footer from '../component/Footer';
 
-
 function Drinks() {
   const { recipes } = useContext(myContext);
   const maxLength = 12;
