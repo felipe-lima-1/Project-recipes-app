@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import MyContext from '../context/myContext';
 import fetchApiFilters from '../services/fetchApiFilters';
@@ -8,6 +8,10 @@ import fetchApiName from '../services/name';
 function FilterButtons() {
   const { location: { pathname } } = useHistory();
   const [listBtn, setListBtn] = useState([]);
+  const [isFiltered, setIsFiltered] = useState({
+    name: '',
+    toggle: false,
+  });
   const { setRecipes } = useContext(MyContext);
   const maxLength = 5;
 
@@ -28,24 +32,7 @@ function FilterButtons() {
     fetchApi();
   }, [pathname, setListBtn]);
 
-  const handleClick = (search) => {
-    let fetchApi;
-    if (pathname === '/meals') {
-      fetchApi = async () => {
-        const result = await filterCategory(search, 'themealdb');
-        setRecipes(result);
-      };
-    }
-    if (pathname === '/drinks') {
-      fetchApi = async () => {
-        const result = await filterCategory(search, 'thecocktaildb');
-        setRecipes(result);
-      };
-    }
-    fetchApi();
-  };
-
-  const cleanFilters = async () => {
+  const cleanFilters = useCallback(async () => {
     let fetchApi;
     if (pathname === '/meals') {
       fetchApi = async () => {
@@ -60,7 +47,49 @@ function FilterButtons() {
       };
     }
     fetchApi();
+    setIsFiltered(!isFiltered);
+  }, [isFiltered, pathname, setRecipes]);
+
+  const handleClick = (search) => {
+    let fetchApi;
+    let filter;
+    if (search !== isFiltered.name) {
+      if (pathname === '/meals') {
+        fetchApi = async () => {
+          const result = await filterCategory(search, 'themealdb');
+          setRecipes(result);
+        };
+      }
+      if (pathname === '/drinks') {
+        fetchApi = async () => {
+          const result = await filterCategory(search, 'thecocktaildb');
+          setRecipes(result);
+        };
+      }
+      fetchApi();
+      filter = {
+        name: search,
+        toggle: true,
+      };
+      setIsFiltered(filter);
+      console.log(filter);
+    } else {
+      cleanFilters();
+      filter = {
+        name: search,
+        toggle: false,
+      };
+      setIsFiltered(filter);
+      console.log(filter);
+    }
   };
+
+  // useEffect(() => () => {
+  //   if (isFiltered === false) {
+  //     cleanFilters();
+  //     console.log(isFiltered);
+  //   }
+  // }, [isFiltered, cleanFilters]);
 
   return (
     <div>
