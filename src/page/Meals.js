@@ -1,4 +1,5 @@
 import React, { useContext, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import Footer from '../component/Footer';
 import Header from '../component/Header';
 import myContext from '../context/myContext';
@@ -25,12 +26,16 @@ function Meals() {
         ? global.alert('Sorry, we haven\'t found any recipes for these filters.')
         : recipes.map((recipe, i) => (i < maxLength)
         && (
-          <section key={ recipe.idMeal } data-testid={ `${i}-recipe-card` }>
+          <Link
+            to={ `/meals/${recipe.idMeal}` }
+            key={ recipe.idMeal }
+            data-testid={ `${i}-recipe-card` }
+          >
             <Recipes
               recipe={ recipe }
               index={ i }
             />
-          </section>
+          </Link>
         ))}
       Meals
       <Footer />

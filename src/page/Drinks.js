@@ -1,4 +1,5 @@
 import React, { useContext, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import Header from '../component/Header';
 import Recipes from '../component/Recipes';
 import myContext from '../context/myContext';
@@ -25,12 +26,16 @@ function Drinks() {
           ? global.alert('Sorry, we haven\'t found any recipes for these filters.')
           : recipes.map((recipe, i) => (i < maxLength)
         && (
-          <section key={ recipe.idDrink } data-testid={ `${i}-recipe-card` }>
+          <Link
+            to={ `/drinks/${recipe.idDrink}` }
+            key={ recipe.idDrink }
+            data-testid={ `${i}-recipe-card` }
+          >
             <Recipes
               recipe={ recipe }
               index={ i }
             />
-          </section>))
+          </Link>))
       }
       Drinks
       <Footer />
