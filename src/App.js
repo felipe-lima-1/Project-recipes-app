@@ -21,8 +21,8 @@ function App() {
         <Route exact path="/profile" component={ Profile } />
         <Route exact path="/done-recipes" component={ DoneRecipes } />
         <Route exact path="/favorite-recipes" component={ FavoriteRecipes } />
-        <Route path="/meals/:id-da-receita" component={ Meal } />
-        <Route path="/drinks/:id-da-receita" component={ Drink } />
+        <Route path="/meals/:id" component={ Meal } />
+        <Route path="/drinks/:id" component={ Drink } />
       </Switch>
     </MyProvider>
   );
