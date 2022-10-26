@@ -2,15 +2,19 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import Footer from '../component/Footer';
 import fetchById from '../services/fetchById';
+import fetchApiName from '../services/name';
 
 function Drink(props) {
   const [recipe, setRecipe] = useState({});
+  const [recommend, setRecommend] = useState([]);
   const { match: { params: { id } } } = props;
 
   useEffect(() => {
     const fetchApi = async () => {
       const result = await fetchById(id, 'thecocktaildb');
       setRecipe(result);
+      const response = await fetchApiName('', 'themealdb');
+      setRecommend(response);
     };
     fetchApi();
   }, [id, setRecipe]);
@@ -65,6 +69,7 @@ function Drink(props) {
         <p data-testid="instructions">
           {recipe[0].strInstructions}
         </p>
+        {console.log(recommend)}
         <Footer />
       </div>
     )
