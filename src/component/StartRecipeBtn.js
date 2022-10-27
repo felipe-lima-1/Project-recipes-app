@@ -11,7 +11,6 @@ function StartRecipeBtn(props) {
     const storage = JSON.parse(localStorage.getItem('inProgressRecipes'));
 
     if (storage !== null) {
-      console.log(storage);
       if (pathname.includes('meals')) {
         setInProgressBtn(Object.keys(storage.meals).some((e) => e === recipeId));
       } else {

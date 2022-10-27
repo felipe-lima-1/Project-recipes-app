@@ -3,14 +3,15 @@ import Carousel from 'react-bootstrap/Carousel';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import clipboard from 'clipboard-copy';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import fetchById from '../services/fetchById';
 import fetchApiName from '../services/name';
 import StartRecipeBtn from '../component/StartRecipeBtn';
 import shareIcon from '../images/shareIcon.svg';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import FavButton from '../component/FavButton';
 
 function Drink(props) {
-  const [recipe, setRecipe] = useState({});
+  const [recipe, setRecipe] = useState([]);
   const [recipeName, setRecipeName] = useState('');
   const [recommend, setRecommend] = useState([]);
   const [showDoneBtn, setShowDoneBtn] = useState(false);
@@ -50,9 +51,10 @@ function Drink(props) {
     fetchApi();
     const storage = JSON.parse(localStorage.getItem('doneRecipes'));
     if (storage !== null) {
-      setShowDoneBtn(storage.some((e) => e.name === recipeName));
+      const storageBool = storage.some((e) => e.name === recipeName);
+      setShowDoneBtn(storageBool);
     }
-  }, [id, recipeName, setRecipe]);
+  }, [id, recipeName, setRecipe, showDoneBtn]);
 
   const getIngredients = () => {
     if (recipe.length > 0) {
@@ -75,7 +77,6 @@ function Drink(props) {
   const handleShare = () => {
     clipboard(`http://localhost:3000${pathname}`);
     setShowCopyMsg(true);
-    console.log(showCopyMsg);
   };
 
   return (
@@ -121,12 +122,7 @@ function Drink(props) {
           />
         </button>
         {showCopyMsg && <span>Link copied!</span>}
-        <button
-          type="button"
-          data-testid="favorite-btn"
-        >
-          Favorite
-        </button>
+        <FavButton recipe={ recipe } />
         <Carousel activeIndex={ index } onSelect={ handleSelect }>
           {
             recommend.map((elem, i) => (
@@ -164,8 +160,7 @@ function Drink(props) {
             ))
           }
         </Carousel>
-        {!showDoneBtn
-        && <StartRecipeBtn recipeId={ recipe[0].idDrink } />}
+        {!showDoneBtn && <StartRecipeBtn recipeId={ recipe[0].idDrink } />}
       </div>
     )
   );

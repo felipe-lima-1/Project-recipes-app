@@ -3,11 +3,12 @@ import Carousel from 'react-bootstrap/Carousel';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import clipboard from 'clipboard-copy';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import fetchById from '../services/fetchById';
 import fetchApiName from '../services/name';
 import StartRecipeBtn from '../component/StartRecipeBtn';
 import shareIcon from '../images/shareIcon.svg';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import FavButton from '../component/FavButton';
 
 function Meal(props) {
   const [recipe, setRecipe] = useState([]);
@@ -83,7 +84,6 @@ function Meal(props) {
   const handleShare = () => {
     clipboard(`http://localhost:3000${pathname}`);
     setShowCopyMsg(true);
-    console.log(showCopyMsg);
   };
 
   return (
@@ -139,12 +139,7 @@ function Meal(props) {
           />
         </button>
         {showCopyMsg && <span>Link copied!</span>}
-        <button
-          type="button"
-          data-testid="favorite-btn"
-        >
-          Favorite
-        </button>
+        <FavButton recipe={ recipe } />
         <Carousel activeIndex={ index } onSelect={ handleSelect }>
           {
             recommend.map((elem, i) => (
