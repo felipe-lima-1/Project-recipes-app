@@ -10,6 +10,7 @@ import DoneRecipes from './page/DoneRecipes';
 import FavoriteRecipes from './page/FavoriteRecipes';
 import Meal from './page/Meal';
 import Drink from './page/Drink';
+import RecipeInProgress from './page/RecipeInProgress';
 
 function App() {
   return (
@@ -23,6 +24,8 @@ function App() {
         <Route exact path="/favorite-recipes" component={ FavoriteRecipes } />
         <Route path="/meals/:id" component={ Meal } />
         <Route path="/drinks/:id" component={ Drink } />
+        <Route path="/drinks/:id/in-progress" component={ RecipeInProgress } />
+        <Route path="/meals/:id/in-progress" component={ RecipeInProgress } />
       </Switch>
     </MyProvider>
   );

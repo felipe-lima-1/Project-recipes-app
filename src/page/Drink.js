@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import Carousel from 'react-bootstrap/Carousel';
+import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import Footer from '../component/Footer';
+import clipboard from 'clipboard-copy';
 import fetchById from '../services/fetchById';
 import fetchApiName from '../services/name';
 import StartRecipeBtn from '../component/StartRecipeBtn';
+import shareIcon from '../images/shareIcon.svg';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function Drink(props) {
@@ -12,9 +14,11 @@ function Drink(props) {
   const [recipeName, setRecipeName] = useState('');
   const [recommend, setRecommend] = useState([]);
   const [showDoneBtn, setShowDoneBtn] = useState(false);
+  const [showCopyMsg, setShowCopyMsg] = useState(false);
   const { match: { params: { id } } } = props;
   const maxLength = 5;
   const [index, setIndex] = useState(0);
+  const { location: { pathname } } = useHistory();
 
   const handleSelect = (selectedIndex) => {
     setIndex(selectedIndex);
@@ -68,6 +72,12 @@ function Drink(props) {
     }
   };
 
+  const handleShare = () => {
+    clipboard(`http://localhost:3000${pathname}`);
+    setShowCopyMsg(true);
+    console.log(showCopyMsg);
+  };
+
   return (
     recipe.length > 0 && (
       <div>
@@ -100,6 +110,23 @@ function Drink(props) {
         <p data-testid="instructions">
           {recipe[0].strInstructions}
         </p>
+        <button
+          type="button"
+          data-testid="share-btn"
+          onClick={ handleShare }
+        >
+          <img
+            src={ shareIcon }
+            alt="Compartilhar"
+          />
+        </button>
+        {showCopyMsg && <span>Link copied!</span>}
+        <button
+          type="button"
+          data-testid="favorite-btn"
+        >
+          Favorite
+        </button>
         <Carousel activeIndex={ index } onSelect={ handleSelect }>
           {
             recommend.map((elem, i) => (
@@ -139,7 +166,6 @@ function Drink(props) {
         </Carousel>
         {!showDoneBtn
         && <StartRecipeBtn recipeId={ recipe[0].idDrink } />}
-        <Footer />
       </div>
     )
   );

@@ -5,7 +5,7 @@ import { useHistory } from 'react-router-dom';
 function StartRecipeBtn(props) {
   const { recipeId } = props;
   const [inProgressBtn, setInProgressBtn] = useState(false);
-  const { location: { pathname } } = useHistory();
+  const { location: { pathname }, push } = useHistory();
 
   useEffect(() => {
     const storage = JSON.parse(localStorage.getItem('inProgressRecipes'));
@@ -27,6 +27,7 @@ function StartRecipeBtn(props) {
           id="start-recipe-btn"
           type="button"
           data-testid="start-recipe-btn"
+          onClick={ () => push(`${pathname}/in-progress`) }
         >
           Continue Recipe
         </button>
@@ -35,6 +36,7 @@ function StartRecipeBtn(props) {
           id="start-recipe-btn"
           type="button"
           data-testid="start-recipe-btn"
+          onClick={ () => push(`${pathname}/in-progress`) }
         >
           Start Recipe
         </button>
