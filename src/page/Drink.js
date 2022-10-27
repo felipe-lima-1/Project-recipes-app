@@ -4,11 +4,14 @@ import PropTypes from 'prop-types';
 import Footer from '../component/Footer';
 import fetchById from '../services/fetchById';
 import fetchApiName from '../services/name';
+import StartRecipeBtn from '../component/StartRecipeBtn';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function Drink(props) {
   const [recipe, setRecipe] = useState({});
+  const [recipeName, setRecipeName] = useState('');
   const [recommend, setRecommend] = useState([]);
+  const [showDoneBtn, setShowDoneBtn] = useState(false);
   const { match: { params: { id } } } = props;
   const maxLength = 5;
   const [index, setIndex] = useState(0);
@@ -21,6 +24,7 @@ function Drink(props) {
     const fetchApi = async () => {
       const result = await fetchById(id, 'thecocktaildb');
       setRecipe(result);
+      setRecipeName(result[0].strDrink);
       const response = await fetchApiName('', 'themealdb');
       const arr = [];
       for (let i = 0; i <= maxLength; i += 2) {
@@ -40,7 +44,11 @@ function Drink(props) {
       setRecommend(arr);
     };
     fetchApi();
-  }, [id, recipe, setRecipe]);
+    const storage = JSON.parse(localStorage.getItem('doneRecipes'));
+    if (storage !== null) {
+      setShowDoneBtn(storage.some((e) => e.name === recipeName));
+    }
+  }, [id, recipeName, setRecipe]);
 
   const getIngredients = () => {
     if (recipe.length > 0) {
@@ -129,6 +137,8 @@ function Drink(props) {
             ))
           }
         </Carousel>
+        {!showDoneBtn
+        && <StartRecipeBtn recipeId={ recipe[0].idDrink } />}
         <Footer />
       </div>
     )

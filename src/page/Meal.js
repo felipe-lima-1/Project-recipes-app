@@ -4,11 +4,14 @@ import PropTypes from 'prop-types';
 import Footer from '../component/Footer';
 import fetchById from '../services/fetchById';
 import fetchApiName from '../services/name';
+import StartRecipeBtn from '../component/StartRecipeBtn';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function Meal(props) {
   const [recipe, setRecipe] = useState([]);
+  const [recipeName, setRecipeName] = useState('');
   const [recommend, setRecommend] = useState([]);
+  const [showDoneBtn, setShowDoneBtn] = useState(false);
   const { match: { params: { id } } } = props;
   const maxLength = 5;
   const [index, setIndex] = useState(0);
@@ -21,6 +24,7 @@ function Meal(props) {
     const fetchApi = async () => {
       const result = await fetchById(id, 'themealdb');
       setRecipe(result);
+      setRecipeName(result[0].strMeal);
       const response = await fetchApiName('', 'thecocktaildb');
       const arr = [];
       for (let i = 0; i <= maxLength; i += 2) {
@@ -40,7 +44,12 @@ function Meal(props) {
       setRecommend(arr);
     };
     fetchApi();
-  }, [id, recipe, setRecipe]);
+    const storage = JSON.parse(localStorage.getItem('doneRecipes'));
+    if (storage !== null) {
+      const storageBool = storage.some((e) => e.name === recipeName);
+      setShowDoneBtn(storageBool);
+    }
+  }, [id, recipeName, setRecipe, showDoneBtn]);
 
   const getIngredients = () => {
     if (recipe.length > 0) {
@@ -146,25 +155,7 @@ function Meal(props) {
             ))
           }
         </Carousel>
-
-        <button
-          className="carousel-control-prev"
-          type="button"
-          data-bs-target="#carouselExampleControls"
-          data-bs-slide="prev"
-        >
-          <span className="carousel-control-prev-icon" aria-hidden="true" />
-          <span className="visually-hidden">Previous</span>
-        </button>
-        <button
-          className="carousel-control-next"
-          type="button"
-          data-bs-target="#carouselExampleControls"
-          data-bs-slide="next"
-        >
-          <span className="carousel-control-next-icon" aria-hidden="true" />
-          <span className="visually-hidden">Next</span>
-        </button>
+        {!showDoneBtn && <StartRecipeBtn recipeId={ recipe[0].idMeal } />}
         <Footer />
       </div>
     )
