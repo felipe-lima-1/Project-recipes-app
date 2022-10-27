@@ -1,23 +1,46 @@
 import React, { useEffect, useState } from 'react';
+import Carousel from 'react-bootstrap/Carousel';
 import PropTypes from 'prop-types';
 import Footer from '../component/Footer';
 import fetchById from '../services/fetchById';
 import fetchApiName from '../services/name';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function Drink(props) {
   const [recipe, setRecipe] = useState({});
   const [recommend, setRecommend] = useState([]);
   const { match: { params: { id } } } = props;
+  const maxLength = 5;
+  const [index, setIndex] = useState(0);
+
+  const handleSelect = (selectedIndex) => {
+    setIndex(selectedIndex);
+  };
 
   useEffect(() => {
     const fetchApi = async () => {
       const result = await fetchById(id, 'thecocktaildb');
       setRecipe(result);
       const response = await fetchApiName('', 'themealdb');
-      setRecommend(response);
+      const arr = [];
+      for (let i = 0; i <= maxLength; i += 2) {
+        arr.push({
+          meal1: {
+            img: response[i].strMealThumb,
+            name: response[i].strMeal,
+            index: i,
+          },
+          meal2: {
+            img: response[i + 1].strMealThumb,
+            name: response[i + 1].strMeal,
+            index: i + 1,
+          },
+        });
+      }
+      setRecommend(arr);
     };
     fetchApi();
-  }, [id, setRecipe]);
+  }, [id, recipe, setRecipe]);
 
   const getIngredients = () => {
     if (recipe.length > 0) {
@@ -69,7 +92,43 @@ function Drink(props) {
         <p data-testid="instructions">
           {recipe[0].strInstructions}
         </p>
-        {console.log(recommend)}
+        <Carousel activeIndex={ index } onSelect={ handleSelect }>
+          {
+            recommend.map((elem, i) => (
+              <Carousel.Item
+                key={ i }
+              >
+                <img
+                  className="d-inline w-50 h-50"
+                  data-testid={ `${elem.meal1.index}-recommendation-card` }
+                  src={ elem.meal1.img }
+                  alt={ elem.meal1.name }
+                />
+                <img
+                  className="d-inline w-50 h-50"
+                  data-testid={ `${elem.meal2.index}-recommendation-card` }
+                  src={ elem.meal2.img }
+                  alt={ elem.meal2.name }
+                />
+                <Carousel.Caption>
+                  <p
+                    data-testid={ `${elem.meal1.index}-recommendation-title` }
+                  >
+                    { elem.meal1.name }
+
+                  </p>
+                  <p
+                    data-testid={ `${elem.meal2.index}-recommendation-title` }
+                  >
+                    { elem.meal2.name }
+
+                  </p>
+                </Carousel.Caption>
+              </Carousel.Item>
+
+            ))
+          }
+        </Carousel>
         <Footer />
       </div>
     )

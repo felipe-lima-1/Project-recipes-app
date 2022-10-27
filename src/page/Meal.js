@@ -10,14 +10,34 @@ function Meal(props) {
   const [recipe, setRecipe] = useState([]);
   const [recommend, setRecommend] = useState([]);
   const { match: { params: { id } } } = props;
-  const maxLength = 6;
+  const maxLength = 5;
+  const [index, setIndex] = useState(0);
+
+  const handleSelect = (selectedIndex) => {
+    setIndex(selectedIndex);
+  };
 
   useEffect(() => {
     const fetchApi = async () => {
       const result = await fetchById(id, 'themealdb');
       setRecipe(result);
       const response = await fetchApiName('', 'thecocktaildb');
-      setRecommend(response);
+      const arr = [];
+      for (let i = 0; i <= maxLength; i += 2) {
+        arr.push({
+          drink1: {
+            img: response[i].strDrinkThumb,
+            name: response[i].strDrink,
+            index: i,
+          },
+          drink2: {
+            img: response[i + 1].strDrinkThumb,
+            name: response[i + 1].strDrink,
+            index: i + 1,
+          },
+        });
+      }
+      setRecommend(arr);
     };
     fetchApi();
   }, [id, recipe, setRecipe]);
@@ -89,52 +109,62 @@ function Meal(props) {
          encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
         />
-        <Carousel
-          variant="carouselExampleControls"
-        >
-          <div className="carousel-inner">
-            { (recommend.length > 0) && recommend.map((e, i) => i < maxLength
+        <Carousel activeIndex={ index } onSelect={ handleSelect }>
+          {
+            recommend.map((elem, i) => (
+              <Carousel.Item
+                key={ i }
+              >
+                <img
+                  className="d-inline w-50 h-50"
+                  data-testid={ `${elem.drink1.index}-recommendation-card` }
+                  src={ elem.drink1.img }
+                  alt={ elem.drink1.name }
+                />
+                <img
+                  className="d-inline w-50 h-50"
+                  data-testid={ `${elem.drink2.index}-recommendation-card` }
+                  src={ elem.drink2.img }
+                  alt={ elem.drink2.name }
+                />
+                <Carousel.Caption>
+                  <p
+                    data-testid={ `${elem.drink1.index}-recommendation-title` }
+                  >
+                    { elem.drink1.name }
 
-        && (
-          i === 0 ? (
-            <div
-              className="carousel-item active"
-              data-testid={ `${i}-recommendation-card` }
-              key={ e.strDrink }
-            >
-              <img src={ e.strDrinkThumb } className="d-block w-100" alt={ e.strDrink } />
-            </div>
-          ) : (
-            <div
-              className="carousel-item"
-              data-testid={ `${i}-recommendation-card` }
-              key={ e.strDrink }
-            >
-              <img src={ e.strDrinkThumb } className="d-block w-100" alt={ e.strDrink } />
-            </div>
-          )
+                  </p>
+                  <p
+                    data-testid={ `${elem.drink2.index}-recommendation-title` }
+                  >
+                    { elem.drink2.name }
 
-        )) }
-          </div>
-          <button
-            className="carousel-control-prev"
-            type="button"
-            data-bs-target="#carouselExampleControls"
-            data-bs-slide="prev"
-          >
-            <span className="carousel-control-prev-icon" aria-hidden="true" />
-            <span className="visually-hidden">Previous</span>
-          </button>
-          <button
-            className="carousel-control-next"
-            type="button"
-            data-bs-target="#carouselExampleControls"
-            data-bs-slide="next"
-          >
-            <span className="carousel-control-next-icon" aria-hidden="true" />
-            <span className="visually-hidden">Next</span>
-          </button>
+                  </p>
+                </Carousel.Caption>
+              </Carousel.Item>
+
+            ))
+          }
         </Carousel>
+
+        <button
+          className="carousel-control-prev"
+          type="button"
+          data-bs-target="#carouselExampleControls"
+          data-bs-slide="prev"
+        >
+          <span className="carousel-control-prev-icon" aria-hidden="true" />
+          <span className="visually-hidden">Previous</span>
+        </button>
+        <button
+          className="carousel-control-next"
+          type="button"
+          data-bs-target="#carouselExampleControls"
+          data-bs-slide="next"
+        >
+          <span className="carousel-control-next-icon" aria-hidden="true" />
+          <span className="visually-hidden">Next</span>
+        </button>
         <Footer />
       </div>
     )
