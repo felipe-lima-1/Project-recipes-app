@@ -23,7 +23,7 @@ function StartRecipeBtn(props) {
     inProgressBtn
       ? (
         <button
-          id="start-recipe-btn"
+          className="start-recipe-btn"
           type="button"
           data-testid="start-recipe-btn"
           onClick={ () => push(`${pathname}/in-progress`) }
