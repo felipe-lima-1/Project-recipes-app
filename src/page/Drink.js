@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Carousel from 'react-bootstrap/Carousel';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import clipboard from 'clipboard-copy';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -10,13 +10,13 @@ import StartRecipeBtn from '../component/StartRecipeBtn';
 import shareIcon from '../images/shareIcon.svg';
 import FavButton from '../component/FavButton';
 
-function Drink(props) {
+function Drink() {
   const [recipe, setRecipe] = useState([]);
   const [recipeName, setRecipeName] = useState('');
   const [recommend, setRecommend] = useState([]);
   const [showDoneBtn, setShowDoneBtn] = useState(false);
   const [showCopyMsg, setShowCopyMsg] = useState(false);
-  const { match: { params: { id } } } = props;
+  const { id } = useParams();
   const maxLength = 5;
   const [index, setIndex] = useState(0);
   const { location: { pathname } } = useHistory();
