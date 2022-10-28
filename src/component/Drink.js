@@ -6,11 +6,11 @@ import clipboard from 'clipboard-copy';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import fetchById from '../services/fetchById';
 import fetchApiName from '../services/name';
-import StartRecipeBtn from '../component/StartRecipeBtn';
+import StartRecipeBtn from './StartRecipeBtn';
 import shareIcon from '../images/shareIcon.svg';
-import FavButton from '../component/FavButton';
+import FavButton from './FavButton';
 
-function Meal() {
+function Drink() {
   const [recipe, setRecipe] = useState([]);
   const [recipeName, setRecipeName] = useState('');
   const [recommend, setRecommend] = useState([]);
@@ -27,21 +27,21 @@ function Meal() {
 
   useEffect(() => {
     const fetchApi = async () => {
-      const result = await fetchById(id, 'themealdb');
+      const result = await fetchById(id, 'thecocktaildb');
       setRecipe(result);
-      setRecipeName(result[0].strMeal);
-      const response = await fetchApiName('', 'thecocktaildb');
+      setRecipeName(result[0].strDrink);
+      const response = await fetchApiName('', 'themealdb');
       const arr = [];
       for (let i = 0; i <= maxLength; i += 2) {
         arr.push({
-          drink1: {
-            img: response[i].strDrinkThumb,
-            name: response[i].strDrink,
+          meal1: {
+            img: response[i].strMealThumb,
+            name: response[i].strMeal,
             index: i,
           },
-          drink2: {
-            img: response[i + 1].strDrinkThumb,
-            name: response[i + 1].strDrink,
+          meal2: {
+            img: response[i + 1].strMealThumb,
+            name: response[i + 1].strMeal,
             index: i + 1,
           },
         });
@@ -74,13 +74,6 @@ function Meal() {
     }
   };
 
-  const getYoutube = () => {
-    const str1 = 'https://www.youtube.com/embed/';
-    const str2 = recipe[0].strYoutube.split('watch?v=')[1];
-    const video = `${str1}${str2}`;
-    return video;
-  };
-
   const handleShare = () => {
     clipboard(`http://localhost:3000${pathname}`);
     setShowCopyMsg(true);
@@ -90,19 +83,20 @@ function Meal() {
     recipe.length > 0 && (
       <div>
         <img
-          src={ recipe[0].strMealThumb }
-          alt={ recipe[0].strMeal }
+          src={ recipe[0].strDrinkThumb }
+          alt={ recipe[0].strDrink }
           data-testid="recipe-photo"
         />
         <p
           data-testid="recipe-title"
         >
-          {recipe[0].strMeal}
+          {recipe[0].strDrink}
         </p>
         <p
           data-testid="recipe-category"
         >
           {recipe[0].strCategory}
+          {recipe[0].strAlcoholic}
         </p>
         {getIngredients().map((ingredient, i) => (
           <p
@@ -117,17 +111,6 @@ function Meal() {
         <p data-testid="instructions">
           {recipe[0].strInstructions}
         </p>
-        <iframe
-          data-testid="video"
-          width="560"
-          height="315"
-          src={ getYoutube() }
-          title="YouTube video player"
-          frameBorder="0"
-          allow="accelerometer; autoplay; clipboard-write;
-         encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-        />
         <button
           type="button"
           data-testid="share-btn"
@@ -148,27 +131,27 @@ function Meal() {
               >
                 <img
                   className="d-inline w-50 h-50"
-                  data-testid={ `${elem.drink1.index}-recommendation-card` }
-                  src={ elem.drink1.img }
-                  alt={ elem.drink1.name }
+                  data-testid={ `${elem.meal1.index}-recommendation-card` }
+                  src={ elem.meal1.img }
+                  alt={ elem.meal1.name }
                 />
                 <img
                   className="d-inline w-50 h-50"
-                  data-testid={ `${elem.drink2.index}-recommendation-card` }
-                  src={ elem.drink2.img }
-                  alt={ elem.drink2.name }
+                  data-testid={ `${elem.meal2.index}-recommendation-card` }
+                  src={ elem.meal2.img }
+                  alt={ elem.meal2.name }
                 />
                 <Carousel.Caption>
                   <p
-                    data-testid={ `${elem.drink1.index}-recommendation-title` }
+                    data-testid={ `${elem.meal1.index}-recommendation-title` }
                   >
-                    { elem.drink1.name }
+                    { elem.meal1.name }
 
                   </p>
                   <p
-                    data-testid={ `${elem.drink2.index}-recommendation-title` }
+                    data-testid={ `${elem.meal2.index}-recommendation-title` }
                   >
-                    { elem.drink2.name }
+                    { elem.meal2.name }
 
                   </p>
                 </Carousel.Caption>
@@ -177,13 +160,13 @@ function Meal() {
             ))
           }
         </Carousel>
-        {!showDoneBtn && <StartRecipeBtn recipeId={ recipe[0].idMeal } />}
+        {!showDoneBtn && <StartRecipeBtn recipeId={ recipe[0].idDrink } />}
       </div>
     )
   );
 }
 
-Meal.propTypes = {
+Drink.propTypes = {
   match: PropTypes.shape({
     params: PropTypes.shape({
       id: PropTypes.string,
@@ -191,4 +174,4 @@ Meal.propTypes = {
   }),
 }.isRequired;
 
-export default Meal;
+export default Drink;
