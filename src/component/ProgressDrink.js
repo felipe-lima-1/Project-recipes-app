@@ -64,14 +64,16 @@ function ProgressMeal() {
           {recipe[0].strAlcoholic}
         </p>
         {getIngredients().map((ingredient, i) => (
-          <p
+          <label
             key={ ingredient }
-            data-testid={ `${i}-ingredient-name-and-measure` }
+            data-testid={ `${i}-ingredient-step` }
+            htmlFor={ `${i}ingredient` }
           >
             {ingredient}
             {' '}
             {getMeasure()[i]}
-          </p>
+            <input type="checkbox" id={ `${i}ingredient` } />
+          </label>
         ))}
         <p data-testid="instructions">
           {recipe[0].strInstructions}
