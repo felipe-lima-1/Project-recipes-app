@@ -73,3 +73,14 @@ footer {
   text-align: center;
   width: 90%;
 }
+
+.start-recipe-btn {
+  bottom: 0;
+  position: fixed;
+  text-align: center;
+  width: 90%;
+}
+
+.ingredient {
+  text-decoration: line-through solid black;
+}
