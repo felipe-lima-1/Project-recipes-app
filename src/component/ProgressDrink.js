@@ -44,6 +44,14 @@ function ProgressMeal() {
     setShowCopyMsg(true);
   };
 
+  const handleCheck = ({ target }) => {
+    if (target.checked === true) {
+      target.parentElement.className = 'ingredient';
+    } else {
+      target.parentElement.className = '';
+    }
+  };
+
   return (
     recipe.length > 0 && (
       <div>
@@ -72,7 +80,11 @@ function ProgressMeal() {
             {ingredient}
             {' '}
             {getMeasure()[i]}
-            <input type="checkbox" id={ `${i}ingredient` } />
+            <input
+              type="checkbox"
+              id={ `${i}ingredient` }
+              onClick={ (e) => handleCheck(e) }
+            />
           </label>
         ))}
         <p data-testid="instructions">

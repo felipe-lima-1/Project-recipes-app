@@ -80,3 +80,7 @@ footer {
   text-align: center;
   width: 90%;
 }
+
+.ingredient {
+  text-decoration: line-through solid rgb(0, 0, 0);
+}
