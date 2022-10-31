@@ -15,7 +15,7 @@ function ProgressMeal() {
     },
     meals: {},
   });
-  const { location: { pathname } } = useHistory();
+  const { location: { pathname }, push } = useHistory();
 
   useEffect(() => {
     const fetchApi = async () => {
@@ -89,6 +89,36 @@ function ProgressMeal() {
     localStorage.setItem('inProgressRecipes', JSON.stringify(obj));
   };
 
+  const handleBtn = () => {
+    let arr = [];
+    if (recipe[0].strTags !== null) {
+      arr = recipe[0].strTags.split(',');
+    }
+    const obj = {
+      id,
+      nationality: '',
+      name: recipe[0].strDrink,
+      category: recipe[0].strCategory,
+      image: recipe[0].strDrinkThumb,
+      tags: arr,
+      alcoholicOrNot: recipe[0].strAlcoholic,
+      type: 'drink',
+      doneDate: new Date().toISOString(),
+    };
+    const storageLocal = JSON.parse(localStorage.getItem('doneRecipes'));
+    if (storageLocal !== null) {
+      localStorage.setItem('doneRecipes', JSON.stringify([
+        ...storageLocal,
+        obj,
+      ]));
+    } else {
+      localStorage.setItem('doneRecipes', JSON.stringify([
+        obj,
+      ]));
+    }
+    push('/done-recipes');
+  };
+
   return (
     recipe.length > 0 && (
       <div>
@@ -111,7 +141,9 @@ function ProgressMeal() {
         {getIngredients().map((ingredient, i) => (
           <label
             key={ ingredient }
-            className={ storage.drinks[id].some((e) => e === ingredient) && 'ingredient' }
+            className={ storage.drinks[id].some(
+              (e) => e === ingredient,
+            ) ? 'ingredient' : '' }
             data-testid={ `${i}-ingredient-step` }
             htmlFor={ `${i}ingredient` }
           >
@@ -145,9 +177,10 @@ function ProgressMeal() {
         <button
           type="button"
           data-testid="finish-recipe-btn"
-
+          disabled={ storage.drinks[id].length !== getIngredients().length }
+          onClick={ handleBtn }
         >
-          Finalizar
+          Finish Recipe
         </button>
       </div>
     ));
