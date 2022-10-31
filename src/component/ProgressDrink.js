@@ -7,19 +7,45 @@ import fetchById from '../services/fetchById';
 
 function ProgressMeal() {
   const [recipe, setRecipe] = useState([]);
-  const [recipeName, setRecipeName] = useState('');
   const [showCopyMsg, setShowCopyMsg] = useState(false);
   const { id } = useParams();
+  const [storage, setStorage] = useState({
+    drinks: {
+      [id]: [],
+    },
+    meals: {},
+  });
   const { location: { pathname } } = useHistory();
 
   useEffect(() => {
     const fetchApi = async () => {
       const result = await fetchById(id, 'thecocktaildb');
       setRecipe(result);
-      setRecipeName(result[0].strDrink);
     };
     fetchApi();
-  }, [id, setRecipe, setRecipeName]);
+    const storageLocal = JSON.parse(localStorage.getItem('inProgressRecipes'));
+    if (storageLocal !== null) {
+      if (storageLocal.drinks) {
+        setStorage(storageLocal);
+      } else {
+        const obj = {
+          ...storageLocal,
+          drinks: {
+            [id]: [],
+          },
+        };
+        setStorage(obj);
+      }
+    } else {
+      const obj = {
+        ...storageLocal,
+        drinks: {
+          [id]: [],
+        },
+      };
+      setStorage(obj);
+    }
+  }, [id]);
 
   const getIngredients = () => {
     if (recipe.length > 0) {
@@ -40,16 +66,27 @@ function ProgressMeal() {
   };
 
   const handleShare = () => {
-    clipboard(`http://localhost:3000${pathname}`);
+    clipboard(`http://localhost:3000${pathname.split('/in')[0]}`);
     setShowCopyMsg(true);
   };
 
   const handleCheck = ({ target }) => {
+    let arr = storage.drinks[id];
     if (target.checked === true) {
       target.parentElement.className = 'ingredient';
+      arr.push(target.className);
     } else {
       target.parentElement.className = '';
+      arr = storage.drinks[id].filter((e) => e !== target.className);
     }
+    const obj = {
+      ...storage,
+      drinks: {
+        [id]: arr,
+      },
+    };
+    setStorage(obj);
+    localStorage.setItem('inProgressRecipes', JSON.stringify(obj));
   };
 
   return (
@@ -74,6 +111,7 @@ function ProgressMeal() {
         {getIngredients().map((ingredient, i) => (
           <label
             key={ ingredient }
+            className={ storage.drinks[id].some((e) => e === ingredient) && 'ingredient' }
             data-testid={ `${i}-ingredient-step` }
             htmlFor={ `${i}ingredient` }
           >
@@ -81,9 +119,11 @@ function ProgressMeal() {
             {' '}
             {getMeasure()[i]}
             <input
+              className={ ingredient }
+              checked={ storage.drinks[id].some((e) => e === ingredient) }
               type="checkbox"
               id={ `${i}ingredient` }
-              onClick={ (e) => handleCheck(e) }
+              onChange={ (e) => handleCheck(e) }
             />
           </label>
         ))}

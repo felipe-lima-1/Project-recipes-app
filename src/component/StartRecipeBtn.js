@@ -12,8 +12,10 @@ function StartRecipeBtn(props) {
 
     if (storage !== null) {
       if (pathname.includes('meals')) {
-        setInProgressBtn(Object.keys(storage.meals).some((e) => e === recipeId));
-      } else {
+        if (storage.meals) {
+          setInProgressBtn(Object.keys(storage.meals).some((e) => e === recipeId));
+        }
+      } else if (storage.drinks) {
         setInProgressBtn(Object.keys(storage.drinks).some((e) => e === recipeId));
       }
     }

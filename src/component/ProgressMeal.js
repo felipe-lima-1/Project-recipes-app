@@ -8,7 +8,6 @@ import fetchById from '../services/fetchById';
 function ProgressMeal() {
   const [recipe, setRecipe] = useState([]);
   const [showCopyMsg, setShowCopyMsg] = useState(false);
-  const [flag, setFlag] = useState('');
   const { id } = useParams();
   const [storage, setStorage] = useState({
     drinks: {},
@@ -26,10 +25,20 @@ function ProgressMeal() {
     fetchApi();
     const storageLocal = JSON.parse(localStorage.getItem('inProgressRecipes'));
     if (storageLocal !== null) {
-      setStorage(storageLocal);
+      if (storageLocal.meals) {
+        setStorage(storageLocal);
+      } else {
+        const obj = {
+          ...storageLocal,
+          meals: {
+            [id]: [],
+          },
+        };
+        setStorage(obj);
+      }
     } else {
       const obj = {
-        drinks: {},
+        ...storageLocal,
         meals: {
           [id]: [],
         },
@@ -57,42 +66,28 @@ function ProgressMeal() {
   };
 
   const handleShare = () => {
-    clipboard(`http://localhost:3000${pathname}`);
+    clipboard(`http://localhost:3000${pathname.split('/in')[0]}`);
     setShowCopyMsg(true);
   };
 
-  // const checkStorage = (target) => storage.meals[id]
-  //   .some((e) => e === target.parentElement.value);
-
   const handleCheck = ({ target }) => {
-    setFlag(target.className);
+    let arr = storage.meals[id];
     if (target.checked === true) {
       target.parentElement.className = 'ingredient';
+      arr.push(target.className);
     } else {
       target.parentElement.className = '';
+      arr = storage.meals[id].filter((e) => e !== target.className);
     }
+    const obj = {
+      ...storage,
+      meals: {
+        [id]: arr,
+      },
+    };
+    setStorage(obj);
+    localStorage.setItem('inProgressRecipes', JSON.stringify(obj));
   };
-
-  useEffect(() => {
-    if (flag !== '') {
-      let arr = storage.meals[id];
-      if (!storage.meals[id]
-        .some((e) => e === flag)) {
-        arr.push(flag);
-      } else {
-        console.log(storage.meals[id]);
-        console.log(flag);
-        arr = storage.meals[id].filter((e) => e !== flag);
-      }
-      const obj = {
-        ...storage,
-        meals: {
-          [id]: arr,
-        },
-      };
-      localStorage.setItem('inProgressRecipes', JSON.stringify(obj));
-    }
-  }, [flag, id, storage]);
 
   return (
     recipe.length > 0 && (
@@ -115,6 +110,7 @@ function ProgressMeal() {
         {getIngredients().map((ingredient, i) => (
           <label
             key={ ingredient }
+            className={ storage.meals[id].some((e) => e === ingredient) && 'ingredient' }
             data-testid={ `${i}-ingredient-step` }
             htmlFor={ `${i}ingredient` }
           >
@@ -123,9 +119,10 @@ function ProgressMeal() {
             {getMeasure()[i]}
             <input
               className={ ingredient }
+              checked={ storage.meals[id].some((e) => e === ingredient) }
               type="checkbox"
               id={ `${i}ingredient` }
-              onClick={ (e) => handleCheck(e) }
+              onChange={ (e) => handleCheck(e) }
             />
           </label>
         ))}
