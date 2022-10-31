@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from '../component/Header';
+import shareIcon from '../images/shareIcon.svg';
 
 function DoneRecipes() {
   const [storage, setStorage] = useState([]);
@@ -24,12 +25,17 @@ function DoneRecipes() {
             src={ recipe.image }
             alt={ recipe.name }
           />
-          <span data-testid={ `${index}-horizontal-top-text` }>{recipe.category}</span>
+          <span
+            data-testid={ `${index}-horizontal-top-text` }
+          >
+            {`${recipe.nationality} - ${recipe.category}`}
+          </span>
           <span data-testid={ `${index}-horizontal-name` }>{recipe.name}</span>
           <span data-testid={ `${index}-horizontal-done-date` }>{recipe.doneDate}</span>
           <button
             type="button"
             data-testid={ `${index}-horizontal-share-btn` }
+            src={ shareIcon }
           >
             Share
           </button>
